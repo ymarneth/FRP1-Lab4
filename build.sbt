@@ -10,9 +10,9 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Seq(
       "ch.qos.logback" % "logback-classic" % logbackVersion,
       "org.scalatest" %% "scalatest" % "3.2.19" % Test,
-      "com.h2database" % "h2" % "2.2.224",
-      "org.flywaydb" % "flyway-core" % "10.15.2",
-      "com.typesafe.slick" %% "slick" % "3.5.0",
-      "com.typesafe.slick" %% "slick-hikaricp" % "3.5.1"
+      "com.h2database" % "h2" % "2.3.232",
+      "org.flywaydb" % "flyway-core" % "11.0.1",
+      "com.typesafe.slick" %% "slick" % "3.5.2",
+      "com.typesafe.slick" %% "slick-hikaricp" % "3.5.2"
     )
   )

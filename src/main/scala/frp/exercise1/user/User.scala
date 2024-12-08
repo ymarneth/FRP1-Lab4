@@ -10,8 +10,7 @@ class Users(tag: Tag) extends Table[User](tag, "USERS") {
   def name = column[String]("NAME")
   def email = column[String]("EMAIL")
 
-  // Map columns to case class
-  def * = (id.?, name, email) <> (User.tupled, User.unapply)
+  def * = (id.?, name, email) <> (User.apply.tupled, User.unapply)
 }
 
 val users = TableQuery[Users]
