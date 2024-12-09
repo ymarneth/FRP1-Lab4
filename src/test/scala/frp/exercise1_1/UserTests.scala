@@ -1,9 +1,8 @@
-package frp.exercise1
+package frp.exercise1_1
 
-import frp.exercise1.user.{User, UserHashmapRepository}
+import frp.exercise1_1.user.{User, UserHashmapRepository}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.funspec.AnyFunSpec
-
 import scala.collection.mutable
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.compiletime.uninitialized

@@ -1,6 +1,6 @@
-package frp.exercise1.user
+package frp.exercise1_1.user
 
-import frp.exercise1.user
+import frp.exercise1_1.user
 import slick.jdbc.H2Profile.api.*
 
 case class User(id: Option[Int], name: String, email: String)

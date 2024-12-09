@@ -1,11 +1,13 @@
-package frp.exercise1
+package frp.exercise1_2
 
+import frp.exercise1_2.FutureHelpers.doInParallel
+import frp.exercise1_2.Gen.intsFromTo
 import org.scalatest.funspec.AnyFunSpec
-import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
 class FutureTests extends AnyFunSpec {
-  describe("doInParallel - Future[Unit]") {
+  describe("Exercise 1.2 a) - doInParallel - Future[Unit]") {
     it("should run computations in parallel and return Future[Unit]") {
       val res = doInParallel(println("A"), println("B"))
       Await.result(res, Duration.Inf)
@@ -23,7 +25,7 @@ class FutureTests extends AnyFunSpec {
     }
   }
 
-  describe("doInParallel - Future[(U, V)] - with FOR strategy") {
+  describe("Exercise 1.2 b) - doInParallel - Future[(U, V)] - with FOR strategy") {
     it("should run computations in parallel and return Future[(U, V)]") {
       val res = doInParallel(Future.successful("U"), Future.successful("V"), "FOR")
       Await.result(res, Duration.Inf)
@@ -43,7 +45,7 @@ class FutureTests extends AnyFunSpec {
     }
   }
 
-  describe("doInParallel - Future[(U, V)] - with FLATMAP strategy") {
+  describe("Exercise 1.2 b) - doInParallel - Future[(U, V)] - with FLATMAP strategy") {
     it("should run computations in parallel and return Future[(U, V)]") {
       val res = doInParallel(Future.successful("U"), Future.successful("V"), "FLATMAP")
       Await.result(res, Duration.Inf)
@@ -63,7 +65,7 @@ class FutureTests extends AnyFunSpec {
     }
   }
 
-  describe("doInParallel - Future[(U, V)] - with ZIP strategy") {
+  describe("Exercise 1.2 c) doInParallel - Future[(U, V)] - with ZIP strategy") {
     it("should run computations in parallel and return Future[(U, V)]") {
       val res = doInParallel(Future.successful("U"), Future.successful("V"), "ZIP")
       Await.result(res, Duration.Inf)
@@ -80,6 +82,20 @@ class FutureTests extends AnyFunSpec {
       }
 
       assert(combined.isCompleted)
+    }
+  }
+
+  describe("Exercise 1.2 d) - doInParallel - sort number list in parallel") {
+    it("sort in parallel") {
+      val (randomNumbers, _) = intsFromTo(0, 100).lists(100)(3293)
+
+      val res = doInParallel(
+        randomNumbers.slice(0, 50).sorted,
+        randomNumbers.slice(50, 100).sorted
+      )
+
+      Await.result(res, Duration.Inf)
+      assert(res.isCompleted)
     }
   }
 }

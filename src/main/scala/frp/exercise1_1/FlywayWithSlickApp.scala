@@ -1,4 +1,4 @@
-package frp.exercise1
+package frp.exercise1_1
 
 import slick.jdbc.H2Profile.api.*
 import org.flywaydb.core.Flyway

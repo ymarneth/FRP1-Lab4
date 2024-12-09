@@ -1,4 +1,4 @@
-package frp.exercise1.user
+package frp.exercise1_1.user
 
 import scala.concurrent.{ExecutionContext, Future}
 import slick.jdbc.H2Profile.api.*
