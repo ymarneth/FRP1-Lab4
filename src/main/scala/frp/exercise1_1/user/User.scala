@@ -1,12 +1,13 @@
 package frp.exercise1_1.user
 
 import slick.jdbc.H2Profile.api.*
+
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.matching.Regex
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
 
 case class User(id: Option[Int], name: String, email: String) {
-  override def toString: String = s"User: ${id.getOrElse("N/A")}: $name, $email"
+  override def toString: String = s"User ${id.getOrElse("N/A")}: $name, $email"
 }
 
 case class CreateUserCommand(name: String, email: String)
@@ -17,9 +18,9 @@ object User {
     user.name.nonEmpty && emailRegex.matches(user.email)
   }
 
-  def printResult(user: Future[Option[User]])(implicit ec: ExecutionContext): Unit = {
+  def printResult(user: Future[Try[User]])(implicit ec: ExecutionContext): Unit = {
     user.onComplete {
-      case Success(value) => println(value)
+      case Success(value) => println(value.get)
       case Failure(exception) => println(exception)
     }
   }

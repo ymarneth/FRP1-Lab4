@@ -8,18 +8,18 @@ import scala.util.{Failure, Success, Try}
 
 class UserRepository(db: Database)(implicit ec: ExecutionContext) {
 
-  def fetchAndValidateUser(id: Int): Future[Option[User]] = fetchUserById(id).map {
-    case Some(user) if validateUser(user) => Some(user)
-    case _ => None
+  def fetchAndValidateUser(id: Int): Future[Try[User]] = fetchUserById(id).map {
+    case Success(user) if validateUser(user) => Success(user)
+    case Success(user) => Failure(new Exception(s"User with ID $id is invalid"))
+    case Failure(exception) => Failure(exception)
   }
 
-  def fetchUserById(id: Int): Future[Option[User]] = {
-    Try {
-      db.run(users.filter(_.id === id).result.headOption)
-    } match {
-      case Success(user) => user
-      case Failure(_) => Future.successful(None)
-    }
+  def fetchUserById(id: Int): Future[Try[User]] = {
+    db.run(users.filter(_.id === id).result.headOption)
+      .map {
+        case Some(user) => Success(user)
+        case None => Failure(new Exception(s"User with ID $id not found"))
+      }
   }
 
   def addUser(user: CreateUserCommand): Future[User] = {

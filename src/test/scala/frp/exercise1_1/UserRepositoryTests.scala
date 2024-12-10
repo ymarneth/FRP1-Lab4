@@ -15,9 +15,14 @@ given ExecutionContext = ExecutionContext.global
 
 class UserRepositoryTests extends AnyFunSpec with BeforeAndAfterEach {
 
-  var userRepo: UserRepository = uninitialized
+  var userRepository: UserRepository = uninitialized
   var db: Database = uninitialized
 
+  /*
+  * This is a quick and dirty way to set up a database for testing.
+  * In a real-world application, you would at least create a TestConfig that takes care of setting up the database
+  * - or even better, run the database in a Docker container.
+  */
   override def beforeEach(): Unit = {
     val flyway = Flyway.configure()
       .dataSource("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", "sa", "")
@@ -30,7 +35,7 @@ class UserRepositoryTests extends AnyFunSpec with BeforeAndAfterEach {
     println(s"Number of migrations applied: $migrationsApplied")
 
     db = Database.forConfig("h2mem1")
-    userRepo = UserRepository(db)
+    userRepository = UserRepository(db)
   }
 
   override def afterEach(): Unit = {
@@ -39,33 +44,36 @@ class UserRepositoryTests extends AnyFunSpec with BeforeAndAfterEach {
 
   it("should fetch a user by ID") {
     val user = User(Some(1), "John Doe", "john.doe@example.com")
-    Await.result(userRepo.addUser(CreateUserCommand(user.name, user.email)), Duration.Inf)
+    Await.result(userRepository.addUser(CreateUserCommand(user.name, user.email)), Duration.Inf)
 
-    val fetchedUser$ = userRepo.fetchUserById(1)
+    val fetchedUser$ = userRepository.fetchUserById(1)
     printResult(fetchedUser$)
 
     val fetchedUser = Await.result(fetchedUser$, Duration.Inf)
-    assert(fetchedUser.contains(user))
+    assert(fetchedUser.isSuccess)
   }
 
   it("should return None when fetching a user by an ID that does not exist") {
-    val fetchedUser = Await.result(userRepo.fetchUserById(999), Duration.Inf)
-    assert(fetchedUser.isEmpty)
+    val fetchedUser = Await.result(userRepository.fetchUserById(999), Duration.Inf)
+    assert(fetchedUser.isFailure)
+    assert(fetchedUser.failed.get.getMessage == "User with ID 999 not found")
   }
 
   it("should validate that user name is not empty when fetching by ID") {
     val user = User(Some(1), "", "john.doe@example.com")
-    Await.result(userRepo.addUser(CreateUserCommand(user.name, user.email)), Duration.Inf)
+    Await.result(userRepository.addUser(CreateUserCommand(user.name, user.email)), Duration.Inf)
 
-    val fetchedUser = Await.result(userRepo.fetchAndValidateUser(1), Duration.Inf)
-    assert(fetchedUser.isEmpty)
+    val fetchedUser = Await.result(userRepository.fetchAndValidateUser(1), Duration.Inf)
+    assert(fetchedUser.isFailure)
+    assert(fetchedUser.failed.get.getMessage == "User with ID 1 is invalid")
   }
 
   it("should validate that the email is valid when fetching by ID") {
     val user = User(Some(1), "John Doe", "john.example.com")
-    Await.result(userRepo.addUser(CreateUserCommand(user.name, user.email)), Duration.Inf)
+    Await.result(userRepository.addUser(CreateUserCommand(user.name, user.email)), Duration.Inf)
 
-    val fetchedUser = Await.result(userRepo.fetchAndValidateUser(1), Duration.Inf)
-    assert(fetchedUser.isEmpty)
+    val fetchedUser = Await.result(userRepository.fetchAndValidateUser(1), Duration.Inf)
+    assert(fetchedUser.isFailure)
+    assert(fetchedUser.failed.get.getMessage == "User with ID 1 is invalid")
   }
 }
