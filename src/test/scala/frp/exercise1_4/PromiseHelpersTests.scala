@@ -1,6 +1,5 @@
 package frp.exercise1_4
 
-import frp.exercise1_4.FutureExtensions.FutureCompanionOps
 import org.scalatest.funspec.AnyFunSpec
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -43,7 +42,7 @@ class PromiseHelpersTests extends AnyFunSpec {
         worker
       })
 
-      val firstFreeWorker = Future.doCompetitively(futures)
+      val firstFreeWorker = futures.doCompetitively()
 
       firstFreeWorker.onComplete(worker => println(s"First free worker: $worker"))
 

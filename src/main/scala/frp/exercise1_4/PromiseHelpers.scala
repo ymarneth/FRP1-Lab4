@@ -5,27 +5,60 @@ import scala.util.{Failure, Success}
 
 given ExecutionContext = ExecutionContext.global
 
-object FutureExtensions:
+extension[A] (f: Seq[Future[A]])
+  def doCompetitively(): Future[A] = {
+    val promise = Promise[A]()
 
-  implicit class FutureOps[A](futures: Seq[Future[A]]) {
-    def doCompetitively(implicit ec: ExecutionContext): Future[A] = {
-      val promise = Promise[A]()
-
-      futures.foreach { future =>
-        future.onComplete {
-          case Success(value) =>
-            if (!promise.isCompleted) promise.success(value)
-          case Failure(exception) =>
-            if (!promise.isCompleted) promise.failure(exception)
-        }
+    f.foreach { future =>
+      future.onComplete {
+        case Success(value) =>
+          if (!promise.isCompleted) promise.success(value)
+        case Failure(exception) =>
+          if (!promise.isCompleted) promise.failure(exception)
       }
-
-      promise.future
     }
+
+    promise.future
   }
 
-  implicit class FutureCompanionOps(val f: Future.type) extends AnyVal {
-    def doCompetitively[A](futures: Seq[Future[A]])(implicit ec: ExecutionContext): Future[A] = {
-      FutureOps(futures).doCompetitively
+extension[A] (f: Future[A])
+  def doCompetitively2(futures: Seq[Future[A]]): Future[A] = {
+    val promise = Promise[A]()
+
+    futures.foreach { future =>
+      future.onComplete {
+        case Success(value) =>
+          if (!promise.isCompleted) promise.success(value)
+        case Failure(exception) =>
+          if (!promise.isCompleted) promise.failure(exception)
+      }
     }
+
+    promise.future
   }
+
+//object FutureExtensions:
+//
+//  implicit class FutureOps[A](futures: Seq[Future[A]]) {
+//    def doCompetitively(implicit ec: ExecutionContext): Future[A] = {
+//      val promise = Promise[A]()
+//
+//      futures.foreach { future =>
+//        future.onComplete {
+//          case Success(value) =>
+//            if (!promise.isCompleted) promise.success(value)
+//          case Failure(exception) =>
+//            if (!promise.isCompleted) promise.failure(exception)
+//        }
+//      }
+//
+//      promise.future
+//    }
+//  }
+//
+//  implicit class FutureCompanionOps(val f: Future.type) extends AnyVal {
+//    def doCompetitively[A](futures: Seq[Future[A]])(implicit ec: ExecutionContext): Future[A] = {
+//      FutureOps(futures).doCompetitively
+//    }
+//  }
+//

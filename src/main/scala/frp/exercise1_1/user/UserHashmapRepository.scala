@@ -1,8 +1,9 @@
 package frp.exercise1_1.user
 
+import frp.exercise1_1.user.User.validateUser
 import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.matching.Regex
+import scala.util.{Failure, Success, Try}
 
 class UserHashmapRepository(db: mutable.HashMap[Int, User])(implicit ec: ExecutionContext) {
 
@@ -12,23 +13,15 @@ class UserHashmapRepository(db: mutable.HashMap[Int, User])(implicit ec: Executi
   }
 
   def fetchUserById(id: Int): Future[Option[User]] = Future {
-    try {
-      db.get(id) match {
-        case Some(user) => Some(user)
-        case None => None
-      }
-    } catch {
-      case e: Exception => None
+    Try(db.get(id)) match {
+      case Success(Some(user)) => Some(user)
+      case Success(None) => None
+      case Failure(_) => None
     }
   }
 
   def addUser(user: User): Future[User] = Future {
     db += (user.id.get -> user)
     user
-  }
-
-  private def validateUser(user: User): Boolean = {
-    val emailRegex: Regex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$".r
-    user.name.nonEmpty && emailRegex.matches(user.email)
   }
 }
