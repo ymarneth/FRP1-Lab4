@@ -6,6 +6,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
 
+// optional id currently needed because of * operator in slick
 case class User(id: Option[Int], name: String, email: String) {
   override def toString: String = s"User ${id.getOrElse("N/A")}: $name, $email"
 }

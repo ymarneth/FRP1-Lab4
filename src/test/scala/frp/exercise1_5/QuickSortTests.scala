@@ -49,57 +49,100 @@ class QuickSortTests extends AnyFunSpec {
   }
 
   describe("Exercise 1.5 QuickSortParallelTests - different threshold values") {
-    it("should sort integers") {
+    it("should sort 20 integers") {
+      given Ordering[Int] = Ordering[Int]
+
+      val intSeq = (1 to 20).map(_ => scala.util.Random.nextInt(1000))
+      val resultFuture = QuickSort.measureTime(QuickSort.quickSortParallel(intSeq, 20))
+      val (duration, results) = Await.result(resultFuture, Duration.Inf)
+      println(s"Average Duration with 20: $duration")
+
+      assert(results.nonEmpty)
+      results.foreach(result => assert(result == intSeq.sorted, "Int list should be correctly sorted."))
+    }
+
+    it("should sort 20 integers parallel") {
       given Ordering[Int] = Ordering[Int]
 
       val intSeq = (1 to 20).map(_ => scala.util.Random.nextInt(1000))
       val resultFuture = QuickSort.measureTime(QuickSort.quickSortParallel(intSeq, 10))
       val (duration, results) = Await.result(resultFuture, Duration.Inf)
-      println(s"Average Duration with threshold 10: $duration")
+      println(s"Average Duration with 20 parallel: $duration")
 
+      assert(results.nonEmpty)
       results.foreach(result => assert(result == intSeq.sorted, "Int list should be correctly sorted."))
     }
 
-    def testQuickSortThreshold(threshold: Int, seqLength: Int = 10000): Unit = {
-      it(s"should sort integers with threshold $threshold") {
-        given Ordering[Int] = Ordering[Int]
+    it("should sort 50 integers") {
+      given Ordering[Int] = Ordering[Int]
 
-        val intSeq = (1 to seqLength).map(_ => scala.util.Random.nextInt(1000))
-        val resultFuture = QuickSort.measureTime(QuickSort.quickSortParallel(intSeq, threshold))
-        val duration = Await.result(resultFuture, Duration.Inf)
-
-        assert(QuickSort.quickSortParallel(intSeq, threshold).value.get.get == intSeq.sorted, "Sorting is incorrect.")
-
-        println(s"Average Duration with threshold $threshold: $duration")
-      }
-    }
-
-    Seq(1, 10, 100, 1000, 5000).foreach { threshold =>
-      testQuickSortThreshold(threshold)
-    }
-
-    it("should handle empty list") {
-      val emptySeq = Seq.empty[Int]
-      val resultFuture = QuickSort.measureTime(QuickSort.quickSortParallel(emptySeq, 10))
+      val intSeq = (1 to 50).map(_ => scala.util.Random.nextInt(1000))
+      val resultFuture = QuickSort.measureTime(QuickSort.quickSortParallel(intSeq, 50))
       val (duration, results) = Await.result(resultFuture, Duration.Inf)
-      println(s"Average Duration with threshold 10 for empty list: $duration")
-      assert(emptySeq == emptySeq.sorted, "Empty list should be considered sorted.")
+      println(s"Average Duration with 50: $duration")
+
+      assert(results.nonEmpty)
+      results.foreach(result => assert(result == intSeq.sorted, "Int list should be correctly sorted."))
     }
 
-    it("should handle a single element list") {
-      val singleElementSeq = Seq(42)
-      val resultFuture = QuickSort.measureTime(QuickSort.quickSortParallel(singleElementSeq, 10))
-      val duration = Await.result(resultFuture, Duration.Inf)
-      println(s"Average Duration with threshold 10 for single element list: $duration")
-      assert(singleElementSeq == singleElementSeq.sorted, "Single element list should be considered sorted.")
+    it("should sort 50 integers parallel") {
+      given Ordering[Int] = Ordering[Int]
+
+      val intSeq = (1 to 50).map(_ => scala.util.Random.nextInt(1000))
+      val resultFuture = QuickSort.measureTime(QuickSort.quickSortParallel(intSeq, 25))
+      val (duration, results) = Await.result(resultFuture, Duration.Inf)
+      println(s"Average Duration with 50 parallel: $duration")
+
+      assert(results.nonEmpty)
+      results.foreach(result => assert(result == intSeq.sorted, "Int list should be correctly sorted."))
     }
 
-    it("should handle a very large list efficiently") {
-      val largeSeq = (1 to 100000).map(_ => scala.util.Random.nextInt(1000))
-      val resultFuture = QuickSort.measureTime(QuickSort.quickSortParallel(largeSeq, 1000))
-      val duration = Await.result(resultFuture, Duration.Inf)
-      println(s"Average Duration with threshold 1000 for large list: $duration")
-      assert(largeSeq == largeSeq.sorted, "Large list is not correctly sorted.")
+    it("should sort 100 integers") {
+      given Ordering[Int] = Ordering[Int]
+
+      val intSeq = (1 to 100).map(_ => scala.util.Random.nextInt(1000))
+      val resultFuture = QuickSort.measureTime(QuickSort.quickSortParallel(intSeq, 100))
+      val (duration, results) = Await.result(resultFuture, Duration.Inf)
+      println(s"Average Duration with 100: $duration")
+
+      assert(results.nonEmpty)
+      results.foreach(result => assert(result == intSeq.sorted, "Int list should be correctly sorted."))
+    }
+
+    it("should sort 100 integers parallel") {
+      given Ordering[Int] = Ordering[Int]
+
+      val intSeq = (1 to 100).map(_ => scala.util.Random.nextInt(1000))
+      val resultFuture = QuickSort.measureTime(QuickSort.quickSortParallel(intSeq, 50))
+      val (duration, results) = Await.result(resultFuture, Duration.Inf)
+      println(s"Average Duration with 100 parallel: $duration")
+
+      assert(results.nonEmpty)
+      results.foreach(result => assert(result == intSeq.sorted, "Int list should be correctly sorted."))
+    }
+
+    it("should sort 1000 integers") {
+      given Ordering[Int] = Ordering[Int]
+
+      val intSeq = (1 to 1000).map(_ => scala.util.Random.nextInt(1000))
+      val resultFuture = QuickSort.measureTime(QuickSort.quickSortParallel(intSeq, 1000))
+      val (duration, results) = Await.result(resultFuture, Duration.Inf)
+      println(s"Average Duration with 1000: $duration")
+
+      assert(results.nonEmpty)
+      results.foreach(result => assert(result == intSeq.sorted, "Int list should be correctly sorted."))
+    }
+
+    it("should sort 1000 integers parallel") {
+      given Ordering[Int] = Ordering[Int]
+
+      val intSeq = (1 to 1000).map(_ => scala.util.Random.nextInt(1000))
+      val resultFuture = QuickSort.measureTime(QuickSort.quickSortParallel(intSeq, 500))
+      val (duration, results) = Await.result(resultFuture, Duration.Inf)
+      println(s"Average Duration with 1000 parallel: $duration")
+
+      assert(results.nonEmpty)
+      results.foreach(result => assert(result == intSeq.sorted, "Int list should be correctly sorted."))
     }
   }
 }

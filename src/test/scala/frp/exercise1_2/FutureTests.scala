@@ -1,7 +1,6 @@
 package frp.exercise1_2
 
 import frp.exercise1_2.FutureHelpers.doInParallel
-import frp.exercise1_2.Gen.intsFromTo
 import org.scalatest.funspec.AnyFunSpec
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
@@ -89,7 +88,7 @@ class FutureTests extends AnyFunSpec {
     it("sort in parallel") {
       // Merge the two sublists by applying the O(n) algorithm introduced in a)
       // -> not sure what is meant by this
-      val (randomNumbers, _) = intsFromTo(0, 100).lists(100)(3293)
+      val randomNumbers = (1 to 100).map(_ => scala.util.Random.nextInt(1000))
 
       val res = doInParallel(
         randomNumbers.slice(0, 50).sorted,
