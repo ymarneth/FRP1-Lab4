@@ -38,7 +38,7 @@ object FutureHelpers:
     combined
   }
 
-  def printOnComplete[T](future: Future[T]): Unit = {
+  private def printOnComplete[T](future: Future[T]): Unit = {
     future.onComplete {
       case Success(_) => println("Both computations finished successfully.")
       case Failure(exception: Throwable) => println(s"An error occurred: ${exception.getMessage}")

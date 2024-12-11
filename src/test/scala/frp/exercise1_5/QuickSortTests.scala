@@ -49,6 +49,17 @@ class QuickSortTests extends AnyFunSpec {
   }
 
   describe("Exercise 1.5 QuickSortParallelTests - different threshold values") {
+    it("should sort integers") {
+      given Ordering[Int] = Ordering[Int]
+
+      val intSeq = (1 to 20).map(_ => scala.util.Random.nextInt(1000))
+      val resultFuture = QuickSort.measureTime(QuickSort.quickSortParallel(intSeq, 10))
+      val (duration, results) = Await.result(resultFuture, Duration.Inf)
+      println(s"Average Duration with threshold 10: $duration")
+
+      results.foreach(result => assert(result == intSeq.sorted, "Int list should be correctly sorted."))
+    }
+
     def testQuickSortThreshold(threshold: Int, seqLength: Int = 10000): Unit = {
       it(s"should sort integers with threshold $threshold") {
         given Ordering[Int] = Ordering[Int]
@@ -70,7 +81,7 @@ class QuickSortTests extends AnyFunSpec {
     it("should handle empty list") {
       val emptySeq = Seq.empty[Int]
       val resultFuture = QuickSort.measureTime(QuickSort.quickSortParallel(emptySeq, 10))
-      val duration = Await.result(resultFuture, Duration.Inf)
+      val (duration, results) = Await.result(resultFuture, Duration.Inf)
       println(s"Average Duration with threshold 10 for empty list: $duration")
       assert(emptySeq == emptySeq.sorted, "Empty list should be considered sorted.")
     }

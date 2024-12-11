@@ -6,7 +6,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 class AdvancedFutureTests extends AnyFunSpec {
-  describe("Exercise 1.3 a) - parallelMax1") {
+  describe("Exercise 1.3 a) - parallelMax1 - with Future.sequence") {
     it("should return the maximum value from a list of integers") {
       val result = Await.result(parallelMax1(List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 5), Duration.Inf)
       assert(result == 10)
@@ -51,7 +51,7 @@ class AdvancedFutureTests extends AnyFunSpec {
     }
   }
 
-  describe("Exercise 1.3 b) - parallelMax2") {
+  describe("Exercise 1.3 b) - parallelMax2 - with Future.foldLeft") {
     it("should return the maximum value from a list of integers") {
       val result = Await.result(parallelMax2(List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 5), Duration.Inf)
       assert(result == 10)

@@ -42,8 +42,7 @@ class PromiseHelpersTests extends AnyFunSpec {
         worker
       })
 
-      val firstFreeWorker = futures.doCompetitively()
-
+      val firstFreeWorker = Future.doCompetitively(futures)
       firstFreeWorker.onComplete(worker => println(s"First free worker: $worker"))
 
       Await.result(firstFreeWorker, Duration.Inf)

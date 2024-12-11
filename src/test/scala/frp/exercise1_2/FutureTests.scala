@@ -87,6 +87,8 @@ class FutureTests extends AnyFunSpec {
 
   describe("Exercise 1.2 d) - doInParallel - sort number list in parallel") {
     it("sort in parallel") {
+      // Merge the two sublists by applying the O(n) algorithm introduced in a)
+      // -> not sure what is meant by this
       val (randomNumbers, _) = intsFromTo(0, 100).lists(100)(3293)
 
       val res = doInParallel(
